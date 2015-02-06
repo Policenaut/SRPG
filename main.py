@@ -2,7 +2,7 @@ import numpy
 import pygame
 import sys
 import os
-#import char
+from char import character
 from pygame.locals import *
 
 pygame.init()
@@ -26,7 +26,8 @@ tile_dict = {
             }
 
 sprite_dict = {
-			   1 : pygame.image.load(mainPath + "\\gfx\\player.png")
+			   	1 : pygame.image.load(mainPath + "\\gfx\\player.png"),
+			   	2 : pygame.image.load(mainPath + "\\gfx\\cursor.png")
 			  }
 
 
@@ -48,6 +49,7 @@ def drawMapArray(maparray):
 
 def drawSpritesInit():
 	screen.blit(sprite_dict[1], ((mapWi * 20) - 20, (mapHi * 20) - 20))
+	screen.blit(sprite_dict[2], ((mapWi * 20) - 20, (mapHi * 20) - 20))
 	return
 
 def moveSprite():
@@ -57,7 +59,14 @@ def moveSprite(x1,y1,mvx,mvy):
 	return
 
 drawMapArray(groundArray)
-drawSpritesInit()
+#drawSpritesInit()
+
+charPlayer = character("player")
+charPlayer.setLocation((mapWi) - 1 , (mapHi) - 1)
+screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
+CUR = character("cursor")
+CUR.setLocation((mapWi) - 1 , (mapHi) - 1)
+screen.blit(CUR.getSprite(),CUR.getLocation())
 
 while gameRunning:
 
@@ -65,7 +74,34 @@ while gameRunning:
         if event.type == pygame.QUIT:
             gameRunning = False
             break
-
+        elif event.type == KEYDOWN and event.key == K_UP:
+        	print "up"
+        	CUR.setLocation(CUR.getX(), CUR.getY() - 1)
+        	print CUR.getLocation()
+        	drawMapArray(groundArray)
+        	screen.blit(CUR.getSprite(),CUR.getLocation())
+        	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
+        elif event.type == KEYDOWN and event.key == K_DOWN:
+        	print "down"
+        	CUR.setLocation(CUR.getX(), CUR.getY() + 1)
+        	print CUR.getLocation()
+        	drawMapArray(groundArray)
+        	screen.blit(CUR.getSprite(),CUR.getLocation())
+        	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
+        elif event.type == KEYDOWN and event.key == K_LEFT:
+        	print "left"
+        	CUR.setLocation(CUR.getX() - 1, CUR.getY())
+        	print CUR.getLocation()
+        	drawMapArray(groundArray)
+        	screen.blit(CUR.getSprite(),CUR.getLocation())
+        	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
+        elif event.type == KEYDOWN and event.key == K_RIGHT:
+        	print "right"
+        	CUR.setLocation(CUR.getX() + 1, CUR.getY())
+        	print CUR.getLocation()
+        	drawMapArray(groundArray)
+        	screen.blit(CUR.getSprite(),CUR.getLocation())
+        	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
     #Updates display and then sets FPS to 30 FPS. 
     pygame.display.update()
     fpsClock.tick(30)

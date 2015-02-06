@@ -1,30 +1,49 @@
-class char:
+import os
+import sys
+import pygame
+
+class character:
+
+	mainPath = os.path.dirname(os.path.realpath(sys.argv[0]))
+	spriteFileName = ""
 
 	hp = 0.0
 	mp = 0.0
-
 	mvt = 0.0
-
 	atk = 0.0
 	mgk = 0.0
-
 	defe = 0.0
 	res = 0.0
+	currentX = 0
+	currentY = 0
 
-	sprite_num = -1
+	'''
+	# Keep track of sprite information
+	sprite_dict = {
+			   		1 : pygame.image.load(mainPath + "\gfx\player.png"),
+			   		2 : pygame.image.load(mainPath + "\gfx\cursor.png")
+			  	  }
+	#
+	'''
 
+	def __init__(self, sprite):
+		self.spriteFileName = "\\gfx\\"+str(sprite)+".png"
+		self.mainPath = os.path.dirname(os.path.realpath(sys.argv[0]))
+		return
 
-	def __init__(sprite, race, level, rank):
+	def setLocation(self, newX, newY):
+		self.currentX = newX*20
+		self.currentY = newY*20
 
-		
+	def getLocation(self):
+		return (self.currentX, self.currentY)
 
-		return self
+	def getX(self):
+		return self.currentX/20
 
-	def makeHuman(race, level, rank)
-		self.hp = 10
-		self.mp = 5
-		self.mvt = 3
-		self.atk = 5
-		self.mgk = 2
-		self.defe = 4
-		self.res = 2
+	def getY(self):
+		return self.currentY/20
+
+	def getSprite(self):
+		return pygame.image.load(self.mainPath + self.spriteFileName)
+
