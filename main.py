@@ -1,19 +1,25 @@
+#!/usr/bin/python -tt
 import numpy
 import pygame
 import sys
 import os
 from char import character
+from menus import InstMenu
 from pygame.locals import *
 
-pygame.init()
+
+
 
 fpsClock = pygame.time.Clock()
 
-windowWi = 860
+windowWi = 860+67
 windowHi = 500
 
 mapWi = 43 
 mapHi = 25
+
+screen = pygame.display.set_mode((windowWi, windowHi))
+pygame.display.set_caption("Game Sampling!")
 
 # ----- project path ------------------------------
 
@@ -25,19 +31,57 @@ tile_dict = {
 			 1 : pygame.image.load(mainPath + "\\gfx\\grass.png"),
             }
 
-sprite_dict = {
-			   	1 : pygame.image.load(mainPath + "\\gfx\\player.png"),
-			   	2 : pygame.image.load(mainPath + "\\gfx\\cursor.png")
-			  }
-
-
 #-------------------------------------------------------
-screen = pygame.display.set_mode((windowWi, windowHi))
-pygame.display.set_caption("Game Sampling!")
 
 gameRunning = True
+menuIsActive = [False]
+thisMenu = [None]
 
 groundArray = numpy.ones((mapWi,mapHi))
+
+def getInputSetValues():
+    event = pygame.event.wait()
+    if event.type == pygame.QUIT:
+        pygame.quit(); sys.exit();
+    if menuIsActive[0] == True:
+     	nextAction = str(thisMenu[0].useMenu(CUR, event))
+     	print nextAction
+      	if nextAction == "Move":
+            CUR.setSprite("cursorMV")
+            CUR.setLocation(charPlayer.getX(), charPlayer.getY(), "map")
+        elif nextAction == "end" or nextAction == "Wait":
+            menuIsActive[0] = False
+            CUR.setSprite("cursor")
+            CUR.setLocation(charPlayer.getX(), charPlayer.getY(),"map")
+    else:
+        getMapInput(event)
+
+
+def getMapInput(event):
+    if event.type == KEYDOWN and event.key == K_UP:
+       	CUR.setLocation(CUR.getX(), CUR.getY() - 1, "map")
+    elif event.type == KEYDOWN and event.key == K_DOWN:
+       	CUR.setLocation(CUR.getX(), CUR.getY() + 1, "map")
+    elif event.type == KEYDOWN and event.key == K_LEFT:
+       	CUR.setLocation(CUR.getX() - 1, CUR.getY(), "map")
+    elif event.type == KEYDOWN and event.key == K_RIGHT:
+       	CUR.setLocation(CUR.getX() + 1, CUR.getY(), "map")
+    elif event.type == KEYDOWN and event.key == K_z:
+       	if CUR.getLocation() == charPlayer.getLocation():
+        	menuIsActive[0] = True
+        	thisMenu[0] = InstMenu(charPlayer, "baseMenu", mapWi, mapHi)
+    		CUR.setSprite("menuItemSelect")
+    		CUR.setLocation(mapWi, 0,"map")
+
+        	
+
+def updateDisplay():
+	drawMapArray(groundArray)
+	if thisMenu[0] != None:
+		thisMenu[0].printMenu()
+	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
+	screen.blit(CUR.getSprite(),CUR.getLocation())
+	return
 
 def drawMapArray(maparray):
     for x in xrange(0, mapWi):
@@ -47,64 +91,21 @@ def drawMapArray(maparray):
             screen.blit(current_tile, (x*20, y*20))
     return
 
-def drawSpritesInit():
-	screen.blit(sprite_dict[1], ((mapWi * 20) - 20, (mapHi * 20) - 20))
-	screen.blit(sprite_dict[2], ((mapWi * 20) - 20, (mapHi * 20) - 20))
-	return
-
-def moveSprite():
-	return
-
-def moveSprite(x1,y1,mvx,mvy):
-	return
-
 drawMapArray(groundArray)
-#drawSpritesInit()
 
 charPlayer = character("player")
-charPlayer.setLocation((mapWi) - 1 , (mapHi) - 1)
+charPlayer.setLocation((mapWi) - 1 , (mapHi) - 1, "map")
 screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
 CUR = character("cursor")
-CUR.setLocation((mapWi) - 1 , (mapHi) - 1)
+CUR.setLocation((mapWi) - 1 , (mapHi) - 1, "map")
 screen.blit(CUR.getSprite(),CUR.getLocation())
 
 while gameRunning:
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            gameRunning = False
-            break
-        elif event.type == KEYDOWN and event.key == K_UP:
-        	print "up"
-        	CUR.setLocation(CUR.getX(), CUR.getY() - 1)
-        	print CUR.getLocation()
-        	drawMapArray(groundArray)
-        	screen.blit(CUR.getSprite(),CUR.getLocation())
-        	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
-        elif event.type == KEYDOWN and event.key == K_DOWN:
-        	print "down"
-        	CUR.setLocation(CUR.getX(), CUR.getY() + 1)
-        	print CUR.getLocation()
-        	drawMapArray(groundArray)
-        	screen.blit(CUR.getSprite(),CUR.getLocation())
-        	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
-        elif event.type == KEYDOWN and event.key == K_LEFT:
-        	print "left"
-        	CUR.setLocation(CUR.getX() - 1, CUR.getY())
-        	print CUR.getLocation()
-        	drawMapArray(groundArray)
-        	screen.blit(CUR.getSprite(),CUR.getLocation())
-        	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
-        elif event.type == KEYDOWN and event.key == K_RIGHT:
-        	print "right"
-        	CUR.setLocation(CUR.getX() + 1, CUR.getY())
-        	print CUR.getLocation()
-        	drawMapArray(groundArray)
-        	screen.blit(CUR.getSprite(),CUR.getLocation())
-        	screen.blit(charPlayer.getSprite(),charPlayer.getLocation())
-    #Updates display and then sets FPS to 30 FPS. 
-    pygame.display.update()
-    fpsClock.tick(30)
+	getInputSetValues()
+	updateDisplay()
+	#Updates display and then sets FPS to 30 FPS. 
+	pygame.display.update()
+	fpsClock.tick(30)
 
 pygame.quit()
 
