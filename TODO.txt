@@ -1,8 +1,5 @@
--> Implement tile grid
--> Implement basic sprites (player, cursor)
--> Implement character/sprite/cursor class
--> Implement cursor movement
-->
-->
+-> Proper range display system
+-> Proper unit order system
+-> 
 ->
 ->
