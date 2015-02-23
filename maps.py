@@ -8,7 +8,6 @@ import constants
 
 
 class Mapping():
-
 	pygame.display.set_mode((1, 1),  pygame.NOFRAME)
 
 	mainPath = os.path.dirname(os.path.realpath(sys.argv[0]))

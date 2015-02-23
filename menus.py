@@ -16,10 +16,10 @@ class InstMenu():
 	charName = ""
 
 	baseMenu = [
-				"Move",
-				"Attack",
-				"Wait"
-			   ]
+	            "Move",
+	            "Attack",
+	            "Wait"
+	           ]
 
 	currentMenu = []
 
@@ -33,14 +33,20 @@ class InstMenu():
 		self.actOnCoords = set()
 		self.didMove = False
 		self.curBattle = initFrom
-
+		self.actOnCoords = set()
 		self.screen = pygame.display.get_surface()
+		self.currentAction = None
 
 		if menuName != "baseMenu":
 			print "notDefault"
 		else:
 			self.menuName = menuName
 			self.currentMenu = self.baseMenu
+
+		self.charPositions = set()
+
+		for char in self.curBattle.currentChars:
+			self.charPositions.add((char.currentX, char.currentY))
 
 		self.printMenu()
 		return
@@ -63,11 +69,11 @@ class InstMenu():
 	def useMenu(self, CUR, event):
 		if event.type == KEYDOWN and event.key == K_UP:
 			if self.menuCurrentLocation - 1 > -1:
-				CUR.setLocation(CUR.getX(), +1,"menu")
+				CUR.setLocation(CUR.getX(), +1, "menu")
 				self.menuCurrentLocation -= 1
 		elif event.type == KEYDOWN and event.key == K_DOWN:
 			if self.menuCurrentLocation + 1 < self.currentMenu.__len__():
-				CUR.setLocation(CUR.getX(), -1,"menu")
+				CUR.setLocation(CUR.getX(), -1, "menu")
 				self.menuCurrentLocation += 1
 		elif event.type == KEYDOWN and event.key == K_z:
 			self.currentAction = self.currentMenu[self.menuCurrentLocation]
@@ -80,48 +86,49 @@ class InstMenu():
 		if action == "Attack":
 			self.displayRangeForAction("Attack")
 		elif action == "Move" and not self.didMove:
-			self.displayRangeForAction("Move")
+			#self.displayRangeForAction("Move")
+			self.getMapInputRange = self.menuForChar.mvt
+			self.generateRangeSet(self.getMapInputRange, self.menuForChar.getX(), self.menuForChar.getY())
+			self.getMapInput = True
 		return action
 
 	def displayRangeForAction(self, action):
 		if action == "Attack":
 			self.getMapInput = True
-			self.getMapInputRange = 10
+			self.getMapInputRange = 12
 			self.generateRangeSet(self.getMapInputRange, self.menuForChar.getX(), self.menuForChar.getY())
 		elif action == "Move":
 			self.getMapInput = True
 			self.getMapInputRange = self.menuForChar.mvt
 			self.generateRangeSet(self.getMapInputRange, self.menuForChar.getX(), self.menuForChar.getY())
+
 		return
 
 	def generateRangeSet(self, rangeNum, originX, originY):
-		charPositions = set()
-
-		for char in self.curBattle.currentChars:
-			charPositions.add((char.currentX, char.currentY))
-
+		print "creating range set"
+		self.actOnCoords = set()
 		startVert = Tile(originX, originY)
-		self.actOnCoords =[]# set()
-		needToTraverse = set()
-		needToTraverse.add(startVert)
+		needToTraverse = []
+		needToTraverse.append(startVert)
+		needToTraverse.append(startVert)
 		while (len(needToTraverse) > 0):
-			traverse = needToTraverse.pop()
-			# mvUp = Tile(traverse.curX, (traverse.curY - 1))
-			# mvDown = Tile(traverse.curX, (traverse.curY + 1))
-			# mvLeft = Tile((traverse.curX - 1), traverse.curY)
-			# mvRight = Tile((traverse.curX + 1), traverse.curY)
-			for tile in [
-						 Tile(traverse.curX, (traverse.curY - 1)),
-			             Tile(traverse.curX, (traverse.curY + 1)),
-			             Tile((traverse.curX - 1), traverse.curY),
-			             Tile((traverse.curX + 1), traverse.curY)
-						]:
-				tileLocation = ((tile.curX * 20), (tile.curY * 20))
-				if tileLocation not in self.actOnCoords and tileLocation not in charPositions:
-					tile.distance = traverse.distance + 1 # Replace 1 with a representation of the terrain traverse cost
-					if tile.distance <= rangeNum:
-						self.actOnCoords.append(tileLocation)
-						needToTraverse.add(tile)
+			traverse = needToTraverse[len(needToTraverse) - 1]
+			pop = True
+			for adjacentTile in [
+				                 Tile(traverse.curX, (traverse.curY - 1)),
+			                     Tile(traverse.curX, (traverse.curY + 1)),
+			                     Tile((traverse.curX - 1), traverse.curY),
+			                     Tile((traverse.curX + 1), traverse.curY)
+				                ]:
+				tileLocation = ((adjacentTile.curX * 20), (adjacentTile.curY * 20))
+				if tileLocation not in self.actOnCoords and tileLocation not in self.charPositions:
+					adjacentTile.distance = traverse.distance + 1 # Replace 1 with a representation of the terrain traverse cost
+					if adjacentTile.distance <= rangeNum:
+						self.actOnCoords.add(tileLocation)
+						needToTraverse.append(adjacentTile)
+						pop = False
+			if pop:
+				needToTraverse.pop()
 
 		return
 
