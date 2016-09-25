@@ -46,7 +46,7 @@ class InstMenu():
 		return
 
 	def printMenu(self):
-		menuBG = pygame.image.load(constants.mainPath + "\\gfx\\menuItem.png").convert()
+		menuBG = pygame.image.load(constants.mainPath + "/gfx/menuItem.png").convert()
 		pygame.init()
 		text_color = pygame.Color('black')
 		font = pygame.font.SysFont(None, 25)
@@ -138,7 +138,7 @@ class InstMenu():
 		return
 
 	def displayRange(self):
-		tileRangeBG = pygame.image.load(constants.mainPath + "\\gfx\\tileShowRange.png").convert_alpha()
+		tileRangeBG = pygame.image.load(constants.mainPath + "/gfx/tileShowRange.png").convert_alpha()
 
 		for coordinate in self.actOnCoords:
 			self.screen.blit(tileRangeBG, coordinate)

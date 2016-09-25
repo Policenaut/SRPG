@@ -22,11 +22,11 @@ class Character(pygame.sprite.Sprite):
 			  }
 
 	def setSprite(self, filename):
-		self.spriteFileName = "\\gfx\\" + str(filename) + ".png"
+		self.spriteFileName = "/gfx/" + str(filename) + ".png"
 		return
 
 	def __init__(self, sprite, speed = None):
-		self.spriteFileName = "\\gfx\\" + str(sprite) + ".png"
+		self.spriteFileName = "/gfx/" + str(sprite) + ".png"
 		self.mainPath = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 		self.isActive = True

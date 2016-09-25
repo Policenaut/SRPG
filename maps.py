@@ -9,8 +9,8 @@ import constants
 pygame.display.set_mode((1, 1),  pygame.NOFRAME)
 
 tile_dict = {
-				 1 : (pygame.image.load(constants.mainPath + "\\gfx\\grass.png").convert(),1),
-	             2 : (pygame.image.load(constants.mainPath + "\\gfx\\water.png").convert(),2)
+				 1 : (pygame.image.load(constants.mainPath + "/gfx/grass.png").convert(),1),
+	             2 : (pygame.image.load(constants.mainPath + "/gfx/water.png").convert(),2)
 				}
 
 class Mapping():
