@@ -1,15 +1,17 @@
+#SRPG
 ![alt tag](./example.png)
 
-SRPG
-
+## Getting started
 Requires python modules: numpy & pygame
 
 using pip:
 
-pip install numpy
+    pip install numpy
 
-pip install pygame
+    pip install pygame
 
-to start: python main.py
+to start: 
+
+    python main.py
 
 NOTE: may not work on windows machines as the paths are currently set using "/" instead of "\"
