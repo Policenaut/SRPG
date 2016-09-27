@@ -3,9 +3,12 @@
 SRPG
 
 Requires python modules: numpy & pygame
-using pip: pip install numpy
-           pip install pygame
 
+using pip:
+
+pip install numpy
+
+pip install pygame
 
 to start: python main.py
 
